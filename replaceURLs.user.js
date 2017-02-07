@@ -20,9 +20,7 @@ var newURLSessionKey = "newUrlKey";
 var stateOfHighlightValidUrlKey = "highlightValidUrlKey";
 
 function updateUrl(target, oldUrl, newUrl) {
-  if (newUrl.length > 0) {
-    return target.replace(new RegExp(oldUrl, 'g'), newUrl);  
-  }
+    return target.replace(new RegExp(oldUrl, 'g'), newUrl);
 }
 
 // Searches area for old url
@@ -180,12 +178,16 @@ function getEditNodes() {
 
   nodes.forEach(function(node) {
     if (node) {
-      if (node.nodeName.toLowerCase() === 'input') {
-        node.value = updateUrl(node.value, oldUrl, newUrl);
-      } else if (node.nodeName.toLowerCase() === 'textarea') {
-        node.innerHTML = updateUrl(node.innerHTML, oldUrl, newUrl);
-      } else {
-        console.log('Error: Unhandled node type.', node.nodeName);
+      if (newUrl.length > 0) {
+
+        if (node.nodeName.toLowerCase() === 'input') {
+          node.value = updateUrl(node.value, oldUrl, newUrl);
+        } else if (node.nodeName.toLowerCase() === 'textarea') {
+          node.innerHTML = updateUrl(node.innerHTML, oldUrl, newUrl);
+        } else {
+          console.log('Error: Unhandled node type.', node.nodeName);
+        }
+        
       }
     }
   });
