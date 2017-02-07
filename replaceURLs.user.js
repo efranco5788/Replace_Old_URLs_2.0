@@ -54,7 +54,7 @@ function searchForNewUrl(){
   var nUrl = sessionStorage.getItem(newURLSessionKey);
   console.log('checking for the url');
   console.log(nUrl);
-  if (nUrl) {
+  if (nUrl && nUrl.length > 0) {
     var links = document.querySelectorAll('#content_listContainer a');
     var items = [];
     var linkFlag = nUrl;
@@ -67,7 +67,7 @@ function searchForNewUrl(){
     } // End of For loop
 
     var shouldNotify = sessionStorage.getItem(stateOfHighlightValidUrlKey);
-
+    console.log(shouldNotify);
     if (items.length > 0 && shouldNotify) {
       alert ('There are ' + items.length + ' new link(s) on this page highlighted in green.');
       // List out items in console
