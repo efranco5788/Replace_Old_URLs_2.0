@@ -20,7 +20,9 @@ var newURLSessionKey = "newUrlKey";
 var stateOfHighlightValidUrlKey = "highlightValidUrlKey";
 
 function updateUrl(target, oldUrl, newUrl) {
-  return target.replace(new RegExp(oldUrl, 'g'), newUrl);
+  if (newUrl.length > 0) {
+    return target.replace(new RegExp(oldUrl, 'g'), newUrl);  
+  }
 }
 
 // Searches area for old url
@@ -54,7 +56,7 @@ function searchForNewUrl(){
   var nUrl = sessionStorage.getItem(newURLSessionKey);
   console.log('checking for the url');
   console.log(nUrl);
-  if (nUrl && nUrl.length > 0) {
+  if (nUrl) {
     var links = document.querySelectorAll('#content_listContainer a');
     var items = [];
     var linkFlag = nUrl;
