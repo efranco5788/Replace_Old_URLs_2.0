@@ -66,14 +66,6 @@ function searchForNewUrl(){
       } // End of inner if statement
     } // End of For loop
 
-    var shouldNotify = sessionStorage.getItem(stateOfHighlightValidUrlKey);
-    console.log(shouldNotify);
-    if (items.length > 0 && shouldNotify) {
-      alert ('There are ' + items.length + ' new link(s) on this page highlighted in green.');
-      // List out items in console
-      console.log(items);
-    }
-
   }// End of outter if statement loop
 }
 
@@ -140,7 +132,6 @@ function getEditNodes() {
   header.insertAdjacentHTML('beforeend', '<input id="oldUrlValue" type="text" name="oldURL" placeholder="Old URL">');
   header.insertAdjacentHTML('beforeend', '<input id="newUrlValue" type="text" name="newURL" placeholder="New URL">');
   header.insertAdjacentHTML('beforeend', '<button id="save_settings" class="button-1" style="width: 120px; height: 30px; font-size: 14px; right 10px; padding: 0px; margin-right: 15px;">Save</button>');
-  header.insertAdjacentHTML('beforeend', '<label><input type="checkbox" id="highlightValidUrl"> Highlight new url</label>&nbsp;');
 
   document.getElementById("save_settings").addEventListener("click", function(){
     var old = document.getElementById("oldUrlValue").value;
@@ -149,10 +140,6 @@ function getEditNodes() {
     newLink = newLink.replace(/\s/g,'');
     sessionStorage.setItem(oldURLSessionKey, old);
     sessionStorage.setItem(newURLSessionKey, newLink);
-
-    //Set the state of the checked box
-    var isSelected = document.getElementById("highlightValidUrl").checked;
-    sessionStorage.setItem(stateOfHighlightValidUrlKey, isSelected);
 
     console.log('saved');
     location.reload();
@@ -187,7 +174,7 @@ function getEditNodes() {
         } else {
           console.log('Error: Unhandled node type.', node.nodeName);
         }
-        
+
       }
     }
   });
