@@ -151,7 +151,7 @@ function getEditNodes() {
     sessionStorage.setItem(newURLSessionKey, newLink);
 
     //Set the state of the checked box
-    var isSelected = document.getElementById("editURLState").checked;
+    var isSelected = document.getElementById("highlightValidUrl").checked;
     sessionStorage.setItem(stateOfHighlightValidUrlKey, isSelected);
 
     console.log('saved');
