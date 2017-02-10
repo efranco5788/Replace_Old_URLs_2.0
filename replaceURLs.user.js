@@ -17,9 +17,10 @@
 
 var oldURLSessionKey = "oldUrlKey";
 var newURLSessionKey = "newUrlKey";
+var stateOfHighlightValidUrlKey = "highlightValidUrlKey";
 
 function updateUrl(target, oldUrl, newUrl) {
-  return target.replace(new RegExp(oldUrl, 'g'), newUrl);
+    return target.replace(new RegExp(oldUrl, 'g'), newUrl);
 }
 
 // Searches area for old url
@@ -64,12 +65,6 @@ function searchForNewUrl(){
         l.setAttribute('style', 'background-color: #00FF00');
       } // End of inner if statement
     } // End of For loop
-
-    if (items.length > 0) {
-      alert ('There are ' + items.length + ' new link(s) on this page highlighted in green.');
-      // List out items in console
-      console.log(items);
-    }
 
   }// End of outter if statement loop
 }
@@ -133,7 +128,7 @@ function getEditNodes() {
 
   // Grab the title div
   var header = document.getElementById("pageTitleDiv");
-  
+
   header.insertAdjacentHTML('beforeend', '<input id="oldUrlValue" type="text" name="oldURL" placeholder="Old URL">');
   header.insertAdjacentHTML('beforeend', '<input id="newUrlValue" type="text" name="newURL" placeholder="New URL">');
   header.insertAdjacentHTML('beforeend', '<button id="save_settings" class="button-1" style="width: 120px; height: 30px; font-size: 14px; right 10px; padding: 0px; margin-right: 15px;">Save</button>');
@@ -145,6 +140,7 @@ function getEditNodes() {
     newLink = newLink.replace(/\s/g,'');
     sessionStorage.setItem(oldURLSessionKey, old);
     sessionStorage.setItem(newURLSessionKey, newLink);
+
     console.log('saved');
     location.reload();
   });
@@ -169,12 +165,16 @@ function getEditNodes() {
 
   nodes.forEach(function(node) {
     if (node) {
-      if (node.nodeName.toLowerCase() === 'input') {
-        node.value = updateUrl(node.value, oldUrl, newUrl);
-      } else if (node.nodeName.toLowerCase() === 'textarea') {
-        node.innerHTML = updateUrl(node.innerHTML, oldUrl, newUrl);
-      } else {
-        console.log('Error: Unhandled node type.', node.nodeName);
+      if (newUrl.length > 0) {
+
+        if (node.nodeName.toLowerCase() === 'input') {
+          node.value = updateUrl(node.value, oldUrl, newUrl);
+        } else if (node.nodeName.toLowerCase() === 'textarea') {
+          node.innerHTML = updateUrl(node.innerHTML, oldUrl, newUrl);
+        } else {
+          console.log('Error: Unhandled node type.', node.nodeName);
+        }
+
       }
     }
   });
