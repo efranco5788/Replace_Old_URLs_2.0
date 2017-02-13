@@ -71,7 +71,7 @@ function searchForNewUrl(){
 
 // Validate Urls form saved session data
 function validateOldUrl(oUrl){
-  if (sessionStorage.getItem(oldURLSessionKey) == null || sessionStorage.getItem(oldURLSessionKey) == undefined) {
+  if (sessionStorage.getItem(oldURLSessionKey) === null || sessionStorage.getItem(oldURLSessionKey) === undefined) {
     oUrl = "";
     sessionStorage.setItem(oldURLSessionKey, oUrl);
   }
@@ -80,13 +80,17 @@ function validateOldUrl(oUrl){
 
 // Validate Urls form saved session data
 function validateNewUrl(nUrl){
-  if (sessionStorage.getItem(newURLSessionKey) == null) {
+  if (sessionStorage.getItem(newURLSessionKey) === null) {
     nUrl = "";
     sessionStorage.setItem(newURLSessionKey, nUrl);
   }
   return nUrl;
 }
 
+function removeProtocols(url){
+    url = url.replace(/[https]+\:\/\/|www\./ig,'');
+    return url;
+}
 
 function getEditNodes() {
   var id = {
@@ -126,36 +130,43 @@ function getEditNodes() {
   //var oldUrl = "fiuonline.mediasite.com";
   //var newUrl = "fiuolmediasite.fiu.edu";
 
-  // Grab the title div
-  var header = document.getElementById("pageTitleDiv");
+  var header = document.getElementById("pageTitleDiv"); // Grab the title div
+  var currentPage = window.location.href; // Current page that was loaded
 
-  header.insertAdjacentHTML('beforeend', '<input id="oldUrlValue" type="text" name="oldURL" placeholder="Old URL">');
-  header.insertAdjacentHTML('beforeend', '<input id="newUrlValue" type="text" name="newURL" placeholder="New URL">');
-  header.insertAdjacentHTML('beforeend', '<button id="save_settings" class="button-1" style="width: 120px; height: 30px; font-size: 14px; right 10px; padding: 0px; margin-right: 15px;">Save</button>');
+  if(currentPage.includes("/webapps/blackboard/execute/manageCourseItem")){
+      if(oldUrl) header.insertAdjacentHTML('beforeend', '<input id="oldUrlValue" type="text" name="oldURL" value=' + oldUrl + ' readonly>');
+      else header.insertAdjacentHTML('beforeend', '<input id="oldUrlValue" type="text" name="oldURL" placeholder="Old URL" readonly>');
+
+      if(newUrl) header.insertAdjacentHTML('beforeend', '<input id="newUrlValue" type="text" name="newURL" value=' + newUrl + ' readonly>');
+      else header.insertAdjacentHTML('beforeend', '<input id="newUrlValue" type="text" name="newURL" placeholder="New URL" readonly>');
+  }
+  else{
+      header.insertAdjacentHTML('beforeend', '<input id="oldUrlValue" type="text" name="oldURL" placeholder="Old URL">');
+      header.insertAdjacentHTML('beforeend', '<input id="newUrlValue" type="text" name="newURL" placeholder="New URL">');
+      header.insertAdjacentHTML('beforeend', '<button id="save_settings" class="button-1" style="width: 120px; height: 30px; font-size: 14px; right 10px; padding: 0px; margin-right: 15px;">Save</button>');
+      header.insertAdjacentHTML('beforeend', '<label id="urlSavedLbl" for="saved">Saved</label>');
+      document.getElementById("urlSavedLbl").style.visibility = "hidden";
+      if (oldUrl) document.getElementById("oldUrlValue").value = oldUrl;
+      if (newUrl) document.getElementById("newUrlValue").value = newUrl;
+  }
 
   document.getElementById("save_settings").addEventListener("click", function(){
     var old = document.getElementById("oldUrlValue").value;
     var newLink = document.getElementById("newUrlValue").value;
     old = old.replace(/\s/g,'');
     newLink = newLink.replace(/\s/g,'');
+    old = removeProtocols(old);
+    newLink = removeProtocols(newLink);
     sessionStorage.setItem(oldURLSessionKey, old);
     sessionStorage.setItem(newURLSessionKey, newLink);
-
+    document.getElementById("urlSavedLbl").style.visibility = "visible";
+    searchForOldUrl(); // This will search for any old url reference once button is clicked
+    searchForNewUrl(); // This will search for any new url refernces once button is clicked
     console.log('saved');
-    location.reload();
   });
 
-  if (oldUrl) {
-    document.getElementById("oldUrlValue").value = oldUrl;
-  }
-
-  if (newUrl) {
-    document.getElementById("newUrlValue").value = newUrl;
-  }
-
-  // Search for urls on page
-  searchForOldUrl();
-  searchForNewUrl();
+  searchForOldUrl(); // Search for old url references on page
+  searchForNewUrl(); // Search for new url references on page
 
   var nodes = getEditNodes();
 
@@ -166,7 +177,6 @@ function getEditNodes() {
   nodes.forEach(function(node) {
     if (node) {
       if (newUrl.length > 0) {
-
         if (node.nodeName.toLowerCase() === 'input') {
           node.value = updateUrl(node.value, oldUrl, newUrl);
         } else if (node.nodeName.toLowerCase() === 'textarea') {
