@@ -23,15 +23,14 @@ function updateUrl(target, oldUrl, newUrl) {
     return target.replace(new RegExp(oldUrl, 'g'), newUrl);
 }
 
-// Searches area for old url
-function searchForOldUrl(){
-  var oldUrl = sessionStorage.getItem(oldURLSessionKey);
+function searchForOldUrl(){ // Searches area for old url
+  var oUrl = sessionStorage.getItem(oldURLSessionKey);
   console.log('checking for the url');
-  console.log(oldUrl);
-  if (oldUrl) {
+  console.log(oUrl);
+  if (oUrl) {
     var links = document.querySelectorAll('#content_listContainer a');
     var items = [];
-    var linkFlag = oldUrl;
+    var linkFlag = oUrl;
 
     for (var l of links) {
       if (l.href.includes(linkFlag)) {
@@ -49,8 +48,7 @@ function searchForOldUrl(){
   }// End of outter if statement loop
 } // End of function
 
-// Search for new URL
-function searchForNewUrl(){
+function searchForNewUrl(){ // Search for new URL
   var nUrl = sessionStorage.getItem(newURLSessionKey);
   console.log('checking for the url');
   console.log(nUrl);
@@ -148,9 +146,8 @@ function getEditNodes() {
       document.getElementById("urlSavedLbl").style.visibility = "hidden";
       if (oldUrl) document.getElementById("oldUrlValue").value = oldUrl;
       if (newUrl) document.getElementById("newUrlValue").value = newUrl;
-  }
 
-  document.getElementById("save_settings").addEventListener("click", function(){
+    document.getElementById("save_settings").addEventListener("click", function(){
     var old = document.getElementById("oldUrlValue").value;
     var newLink = document.getElementById("newUrlValue").value;
     old = old.replace(/\s/g,'');
@@ -164,12 +161,12 @@ function getEditNodes() {
     searchForNewUrl(); // This will search for any new url refernces once button is clicked
     console.log('saved');
   });
+  }
 
   searchForOldUrl(); // Search for old url references on page
   searchForNewUrl(); // Search for new url references on page
 
   var nodes = getEditNodes();
-
   nodes = nodes.map(function(id) {
     return document.getElementById(id);
   });
